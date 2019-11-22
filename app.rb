@@ -6,7 +6,15 @@ require 'json'
 require 'addressable/uri'
 require 'byebug' if development?
 
+
+
 class OffsiteGatewaySim < Sinatra::Base
+
+  enable :logging
+
+  before do
+    logger.level = Logger::DEBUG
+  end
 
   def initialize(base_path: '')
     @base_path = base_path
@@ -63,8 +71,8 @@ class OffsiteGatewaySim < Sinatra::Base
   post %r{/(capture|refund|void)} do |action|
     content_type :json
 
-    puts "XXXX: LOGGING REQUEST"
-    puts request_fields
+    logger.debug "XXXX: LOGGING REQUEST"
+    logger.debug fields
 
     if signature_valid?
       [200, {}, fields.merge(x_result: 'pending',
@@ -95,8 +103,8 @@ class OffsiteGatewaySim < Sinatra::Base
       payload[field] = fields[field] if fields[field]
     end
 
-    puts "XXXX: LOGGING"
-    puts payload
+    logger.debug "XXXX: LOGGING REQUEST"
+    logger.debug fields
 
     if action == "failed"
       payload['x_message'] = "This is a custom error message."
