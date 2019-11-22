@@ -122,7 +122,11 @@ class OffsiteGatewaySim < Sinatra::Base
 
     if request.params['fire_callback'] == 'true'
       callback_url = fields['x_url_callback']
-      response = HTTParty.post(callback_url, body: payload)
+      response = HTTParty.post(callback_url, body: payload, logger: logger, log_level: :debug, log_format: :curl)
+
+      logger.debug "XXXX: LOGGING CALLBACK RESPONSE"
+      logger.debug response
+
       if response.code == 200
         result[:redirect] = redirect_url if redirect_url
       else
