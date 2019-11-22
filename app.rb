@@ -117,6 +117,9 @@ class OffsiteGatewaySim < Sinatra::Base
       uri
     end
 
+    logger.debug "XXXX: LOGGING PAYLOAD"
+    logger.debug payload
+
     if request.params['fire_callback'] == 'true'
       callback_url = fields['x_url_callback']
       response = HTTParty.post(callback_url, body: payload)
