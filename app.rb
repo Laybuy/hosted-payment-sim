@@ -63,6 +63,9 @@ class OffsiteGatewaySim < Sinatra::Base
   post %r{/(capture|refund|void)} do |action|
     content_type :json
 
+    puts "XXXX: LOGGING REQUEST"
+    puts request_fields
+
     if signature_valid?
       [200, {}, fields.merge(x_result: 'pending',
                              x_gateway_reference: SecureRandom.hex,
@@ -91,6 +94,9 @@ class OffsiteGatewaySim < Sinatra::Base
     %w(x_transaction_type x_message x_result).each do |field|
       payload[field] = fields[field] if fields[field]
     end
+
+    puts "XXXX: LOGGING"
+    puts payload
 
     if action == "failed"
       payload['x_message'] = "This is a custom error message."
